@@ -1,0 +1,98 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.mgrsys.blankproject"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "0.1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+        project.ext.set("archivesBaseName", defaultConfig.applicationId + "-" + defaultConfig.versionName)
+    }
+
+    flavorDimensions "env"
+
+    productFlavors {
+        mock {
+            applicationIdSuffix ".mock"
+        }
+        dev {
+            applicationIdSuffix ".dev"
+        }
+        prod {
+            applicationIdSuffix ""
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            debuggable true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled true
+            debuggable false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+
+    implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
+    implementation "com.android.support:design:$supportLibraryVersion"
+    implementation "com.android.support.constraint:constraint-layout:$constraintsLayoutVersion"
+
+    implementation "android.arch.lifecycle:extensions:$archComponentsVersion"
+    annotationProcessor "android.arch.lifecycle:compiler:$archComponentsVersion"
+
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+
+    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+    implementation "com.tbruyelle.rxpermissions2:rxpermissions:$rxPermissionsVersion"
+    implementation "com.mlsdev.rximagepicker:library:$rxImagePickerVersion"
+    implementation "com.github.whalemare:RxValidator2:$rxValidator2"
+
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
+
+    implementation "ru.terrakok.cicerone:cicerone:$ciceroneVersion"
+
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
+    kapt "com.github.bumptech.glide:compiler:$glideVersion"
+    implementation "jp.wasabeef:glide-transformations:$glideTransformationsVersion"
+
+    implementation "com.jakewharton.timber:timber:$timberVersion"
+
+    testImplementation "junit:junit:$junitVersion"
+
+    androidTestImplementation("com.android.support.test.espresso:espresso-core:$espressoVersion", {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+}
+
+repositories {
+    mavenCentral()
+}
