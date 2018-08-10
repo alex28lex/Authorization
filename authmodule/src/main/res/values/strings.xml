@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">AuthModule</string>
+    <string name="auth.button.apply">Sign In</string>
+    <string name="auth.email.hint">Email</string>
+    <string name="auth.login.hint">Login</string>
+    <string name="auth.password.hint">Password</string>
+</resources>

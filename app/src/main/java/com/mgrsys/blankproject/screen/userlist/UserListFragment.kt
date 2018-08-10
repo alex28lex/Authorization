@@ -27,63 +27,63 @@ import kotlinx.android.synthetic.main.fragment_user_list.*
  * @author Anton Vlasov
  */
 class UserListFragment : BaseFragment() {
-  private lateinit var viewModel: UserListViewModel
+    private lateinit var viewModel: UserListViewModel
 
-  private var usersAdapter: BaseCellDelegateAdapter<UserListRecyclerObject> = BaseCellDelegateAdapter()
+    private var usersAdapter: BaseCellDelegateAdapter<UserListRecyclerObject> = BaseCellDelegateAdapter()
 
-  companion object {
-    fun newInstance(): UserListFragment {
-      return UserListFragment()
+    companion object {
+        fun newInstance(): UserListFragment {
+            return UserListFragment()
+        }
     }
-  }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return inflater.inflate(R.layout.fragment_user_list, container, false)
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-
-    val userCellDelegate = UserCellDelegate()
-    val progressCellDelegate = ProgressCellDelegate()
-
-    userCellDelegate.setUserClickListener(object : OnCellDelegateClickListener<User> {
-      override fun onCellDelegateClick(itemView: View, position: Int, item: User?) {
-        item?.let { viewModel.onUserClick(it) }
-      }
-    })
-
-    usersAdapter.setCellDelegates(userCellDelegate, progressCellDelegate)
-
-    recyclerView.apply {
-      adapter = usersAdapter
-      layoutManager = LinearLayoutManager(context)
-      addItemDecoration(MarginItemDecoration(R.dimen.size_xsmall))
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_user_list, container, false)
     }
-  }
 
-  override fun onActivityCreated(savedInstanceState: Bundle?) {
-    super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    viewModel = ViewModelProviders.of(this).get(UserListViewModel::class.java)
+        val userCellDelegate = UserCellDelegate()
+        val progressCellDelegate = ProgressCellDelegate()
 
-    viewModel.usersLiveData.observe(this, Observer {
-      when (it?.status) {
-        Resource.Status.LOADING -> {
-          setProgressViewEnabled(true)
-          setEmptyViewEnabled(false)
+        userCellDelegate.setUserClickListener(object : OnCellDelegateClickListener<User> {
+            override fun onCellDelegateClick(itemView: View, position: Int, item: User?) {
+                item?.let { viewModel.onUserClick(it) }
+            }
+        })
+
+        usersAdapter.setCellDelegates(userCellDelegate, progressCellDelegate)
+
+        recyclerView.apply {
+            adapter = usersAdapter
+            layoutManager = LinearLayoutManager(context)
+            addItemDecoration(MarginItemDecoration(R.dimen.size_xsmall))
         }
-        Resource.Status.SUCCESS -> {
-          setProgressViewEnabled(false)
-          setEmptyViewEnabled(false)
-          usersAdapter.setItems(it.data)
-        }
-        Resource.Status.ERROR -> {
-          setProgressViewEnabled(false)
-          setEmptyViewEnabled(true)
-          it.error?.let { showMessage(it.localizedMessage) }
-        }
-      }
-    })
-  }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        viewModel = ViewModelProviders.of(this).get(UserListViewModel::class.java)
+
+        viewModel.usersLiveData.observe(this, Observer {
+            when (it?.status) {
+                Resource.Status.LOADING -> {
+                    setProgressViewEnabled(true)
+                    setEmptyViewEnabled(false)
+                }
+                Resource.Status.SUCCESS -> {
+                    setProgressViewEnabled(false)
+                    setEmptyViewEnabled(false)
+                    usersAdapter.setItems(it.data)
+                }
+                Resource.Status.ERROR -> {
+                    setProgressViewEnabled(false)
+                    setEmptyViewEnabled(true)
+                    it.error?.let { showMessage(it.localizedMessage) }
+                }
+            }
+        })
+    }
 }

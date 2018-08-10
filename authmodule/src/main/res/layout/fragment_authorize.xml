@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+      android:id="@id/toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="?attr/actionBarSize"
+      app:title="@string/app_name"/>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/size_medium"
+      android:layout_below="@id/toolbar"
+      android:orientation="vertical">
+
+      <android.support.design.widget.TextInputLayout
+        android:id="@+id/text_input_mail"
+        style="@style/Widget.App.InputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:errorEnabled="true">
+
+        <android.support.design.widget.TextInputEditText
+          android:id="@+id/edit_input_mail"
+          style="@style/Widget.App.EditText"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:enabled="true"
+          android:hint="@string/auth.login.hint"
+          android:imeOptions="actionNext"
+          android:theme="@style/Widget.App.InputLayout"
+          tools:text="karpenko@magora.systems"/>
+
+      </android.support.design.widget.TextInputLayout>
+
+
+      <android.support.design.widget.TextInputLayout
+        android:id="@+id/text_input_password"
+        style="@style/Widget.App.InputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:errorEnabled="true">
+
+        <android.support.design.widget.TextInputEditText
+          android:id="@+id/edit_input_password"
+          style="@style/Widget.App.EditText"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="@string/auth.password.hint"
+          android:imeOptions="actionDone"
+          android:inputType="textPassword"
+          android:theme="@style/Widget.App.InputLayout"
+          tools:text="Holden"/>
+
+      </android.support.design.widget.TextInputLayout>
+
+      <FrameLayout
+        android:id="@+id/action_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+          android:id="@+id/button_sign_in"
+          style="@style/Widget.App.Button.Action"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:enabled="false"
+          android:text="@string/auth.button.apply"
+          android:visibility="visible"
+          tools:enabled="true"/>
+
+        <ProgressBar
+          android:id="@+id/progress_layout"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:visibility="gone"
+          tools:visibility="visible"/>
+      </FrameLayout>
+    </LinearLayout>
+  </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>
