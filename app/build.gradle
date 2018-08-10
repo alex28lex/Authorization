@@ -15,6 +15,7 @@ android {
         versionName "0.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true //important
         project.ext.set("archivesBaseName", defaultConfig.applicationId + "-" + defaultConfig.versionName)
     }
 
@@ -53,44 +54,34 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
-
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.41'
     implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
     implementation "com.android.support:design:$supportLibraryVersion"
     implementation "com.android.support.constraint:constraint-layout:$constraintsLayoutVersion"
-
     implementation "android.arch.lifecycle:extensions:$archComponentsVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$archComponentsVersion"
-
     implementation "com.google.dagger:dagger:$daggerVersion"
     annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
-
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
     implementation "com.tbruyelle.rxpermissions2:rxpermissions:$rxPermissionsVersion"
     implementation "com.mlsdev.rximagepicker:library:$rxImagePickerVersion"
     implementation "com.github.whalemare:RxValidator2:$rxValidator2"
-
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
-
     implementation "ru.terrakok.cicerone:cicerone:$ciceroneVersion"
-
     implementation "com.github.bumptech.glide:glide:$glideVersion"
     kapt "com.github.bumptech.glide:compiler:$glideVersion"
     implementation "jp.wasabeef:glide-transformations:$glideTransformationsVersion"
-
     implementation "com.jakewharton.timber:timber:$timberVersion"
-
     testImplementation "junit:junit:$junitVersion"
-
     androidTestImplementation("com.android.support.test.espresso:espresso-core:$espressoVersion", {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    implementation project(':authmodule')
 }
 
 repositories {
