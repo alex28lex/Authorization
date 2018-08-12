@@ -1,6 +1,6 @@
 package com.mgrsys.blankproject.application.di
 
-/*import com.magorasystems.pmtoolpush.screen.authorize.AuthorizeViewModel*/
+/*import com.magorasystems.pmtoolpush.screen.signIn.AuthorizeViewModel*/
 import dagger.Component
 import javax.inject.Singleton
 

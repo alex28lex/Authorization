@@ -4,7 +4,11 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject
-
+import com.magorasystems.pmtoolpush.screen.viewobject.auth.CredentialsVo
+import com.mgrsys.authorization.authorize.usecase.SignInUseCase
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 
 
 import javax.inject.Inject
@@ -15,21 +19,17 @@ import javax.inject.Inject
  * @author Valentin S.Bolkonsky
  */
 class SignInViewModel : ViewModel() {
-/*    @Inject
-    lateinit var authUseCase: AuthorizeUseCase*/
+    @Inject
+    lateinit var authUseCase: SignInUseCase
+
     private val _navigateToMain = MutableLiveData<Unit>()
     val navigateToMain: LiveData<Unit>
         get() = _navigateToMain
-
 
     private val _authorizeSuccess = MutableLiveData<ViewObject<Unit>>()
     val authorizeSuccess: LiveData<ViewObject<Unit>>
         get() = _authorizeSuccess
 
-
- /*   private val _authorizePmToolServiceLiveData = MutableLiveData<ViewObject<PmToolService>>()
-    val authorizePmToolServiceLiveData: LiveData<ViewObject<PmToolService>>
-        get() = _authorizePmToolServiceLiveData
 
     private var _authorizeDisposable: Disposable? = null
 
@@ -37,28 +37,22 @@ class SignInViewModel : ViewModel() {
         _authorizeDisposable?.dispose()
 
 
-        _authorizeDisposable =  authUseCase.authorize(credentials.login,credentials.password)
+        _authorizeDisposable = authUseCase.signIn(credentials.login, credentials.password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { _authorizePmToolServiceLiveData.value = ViewObject.Success(it) },
-                        { _authorizePmToolServiceLiveData.value = ViewObject.Error(it) },
                         {
-                            val successCount =
-                                    pmToolServiceManager.services.count { it.status == PmToolService.Status.AUTHORIZED }
-                            if (successCount > 0) {
-                                _authorizeSuccess.value = ViewObject.Success(Unit)
-                                _navigateToMain.value = Unit
-                            } else {
-                                _authorizeSuccess.value = ViewObject.Error()
-                            }
+                            _authorizeSuccess.value = ViewObject.Success(Unit)
+                            _navigateToMain.value = Unit
                         },
+                        { _authorizeSuccess.value = ViewObject.Error(it) },
+                        { },
                         { _authorizeSuccess.value = ViewObject.Loading() }
                 )
     }
-*/
+
     override fun onCleared() {
         super.onCleared()
-       // _authorizeDisposable?.dispose()
+        _authorizeDisposable?.dispose()
     }
 }

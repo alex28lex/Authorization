@@ -1,15 +1,31 @@
 package com.magorasystems.pmtoolpush.screen.authorize
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import com.magorasystems.pmtoolpush.screen.viewobject.auth.CredentialsVo
 import com.magorasystems.pmtoolpush.util.fragment.BaseFragment
 import com.mgrsys.authorization.authmodule.R
+import com.mgrsys.authorization.authorize.application.manager.ErrorHandler
+import com.mgrsys.authorization.authorize.model.validator.PasswordValidatorRule
+import com.mgrsys.blankproject.model.validator.EmailValidateRule
+import com.mgrsys.blankproject.model.validator.EmptyValidatorRule
+import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import ru.whalemare.rxvalidator.RxCombineValidator
+import ru.whalemare.rxvalidator.RxValidator
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject.Error as error
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject.Loading as loading
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject.Success as success
-
+import kotlinx.android.synthetic.main.fragment_authorize.button_sign_in as authorizeButton
+import kotlinx.android.synthetic.main.fragment_authorize.progress_layout as progressView
+import kotlinx.android.synthetic.main.fragment_authorize.text_input_mail as inputEmail
+import kotlinx.android.synthetic.main.fragment_authorize.text_input_password as inputPassword
+import kotlinx.android.synthetic.main.fragment_authorize.progress_layout as progressView
 
 /**
  * Developed 2018.
@@ -18,6 +34,8 @@ import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject.Success as succ
  */
 
 class SignInFragment : BaseFragment() {
+
+    private lateinit var viewModel: SignInViewModel
 
     companion object {
         fun newInstance(): SignInFragment {
@@ -29,13 +47,15 @@ class SignInFragment : BaseFragment() {
     }
 
 
-    lateinit var viewModel: SignInViewModel
-
     var viewDisposable: Disposable? = null
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
 
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_authorize, container, false)
     }
 
     override fun getContentViewLayoutRes(): Int {
@@ -44,89 +64,52 @@ class SignInFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProviders.of(this).get(SignInViewModel::class.java)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-/*    val loginObservable: Observable<Boolean> = RxValidator(inputEmail)
-      .apply {
-        add(object : ValidateRule {
-          override fun errorMessage(): String {
-            return getString(R.string.error_validation_login)
-          }
+        val loginObservable: Observable<Boolean> = RxValidator(inputEmail)
+                .apply {
+                    add(EmptyValidatorRule())
+                    add(EmailValidateRule())
+                }.asObservable()
 
-          override fun validate(data: String?): Boolean {
-            return data != null && data.isNotEmpty()
-          }
-        })
-      }.asObservable()*/
-/*
-    val passwordObservable: Observable<Boolean> = RxValidator(inputPassword)
-      .apply {
-        add(object : ValidateRule {
-          override fun errorMessage(): String {
-            return getString(R.string.error_validation_password)
-          }
+        val passwordObservable: Observable<Boolean> = RxValidator(inputPassword)
+                .apply {
+                    add(EmptyValidatorRule())
+                    add(PasswordValidatorRule())
+                }.asObservable()
 
-          override fun validate(data: String?): Boolean {
-            return data != null && data.isNotEmpty()
-          }
-        })
-      }.asObservable()
+        viewDisposable = RxCombineValidator(loginObservable, passwordObservable)
+                .asObservable()
+                .distinctUntilChanged()
+                .subscribe { valid -> authorizeButton.isEnabled = valid }
 
-    viewDisposable = RxCombineValidator(loginObservable, passwordObservable)
-      .asObservable()
-      .distinctUntilChanged()
-      .subscribe { valid -> authorizeButton.isEnabled = valid }
-
-    authorizeButton.setOnClickListener {
-      clearMessageQueue()
-      viewModel.authorize(
-        CredentialsVo(
-          inputEmail.editText?.text.toString(),
-          inputPassword.editText?.text.toString()
-        )
-      )
-    }
-
-    viewModel = ViewModelProviders.of(this, viewModelFactory).get(AuthorizeViewModel::class.java)
-
-    viewModel.authorizePmToolServiceLiveData.let {
-      it.observe(this@AuthorizeFragment, Observer {
-        it ?: return@Observer
-        when (it) {
-          is success -> {
-            val service = it.data
-            when (service?.status) {
-              PmToolService.Status.AUTHORIZED -> {
-                showMessageInQueue(
-                  "${service.tag} authorized",
-                  service.user?.displayName.toString()
-                )
-              }
-              PmToolService.Status.NOT_AUTHORIZED, PmToolService.Status.ERROR -> {
-                showMessageInQueue(
-                  "${service.tag} auth failed",
-                  service.error?.localizedMessage.toString()
-                )
-              }
-            }
-          }
+        authorizeButton.setOnClickListener {
+            viewModel.authorize(
+                    CredentialsVo(
+                            inputEmail.editText?.text.toString(),
+                            inputPassword.editText?.text.toString()
+                    )
+            )
         }
-      })
-    }
-    viewModel.authorizeSuccess.observe(this, Observer {
-      when (it) {
-        is loading -> setProgressViewEnabled(true)
-        // is success -> setProgressViewEnabled(false)
-        is error -> setProgressViewEnabled(false)
-      }
-    })
-    viewModel.navigateToMain.observe(this, Observer {
-      Navigator.fromAuthToMain(this)
-    })
-  }*/
+
+        viewModel.authorizeSuccess.observe(this, Observer {
+            when (it) {
+                is loading -> setProgressViewEnabled(true)
+                is success -> setProgressViewEnabled(false)
+                is error -> {
+                    setProgressViewEnabled(false)
+                    ErrorHandler.handleError(it.error!!, this@SignInFragment)
+                }
+            }
+        })
+        viewModel.navigateToMain.observe(this, Observer {
+            //route
+        })
+
     }
 
     override fun onDestroyView() {
@@ -134,20 +117,11 @@ class SignInFragment : BaseFragment() {
         viewDisposable?.dispose()
     }
 
-/*  private val toastMessageQueue: ToastMessageQueue by lazy { ToastMessageQueue(context!!) }
 
-  fun showMessageInQueue(title: String, message: String) {
-    toastMessageQueue.showMessageInQueue(title, message)
-  }
-
-  fun clearMessageQueue() {
-    toastMessageQueue.clearMessageQueue()
-  }
-
-  fun setProgressViewEnabled(enabled: Boolean) {
-    authorizeButton.isEnabled = !enabled
-    progressView.visibility(enabled)
-    inputEmail.isEnabled = !enabled
-    inputPassword.isEnabled = !enabled
-  }*/
+    fun setProgressViewEnabled(enabled: Boolean) {
+        authorizeButton.isEnabled = !enabled
+        progressView.visibility = if (enabled) View.VISIBLE else View.GONE
+        inputEmail.isEnabled = !enabled
+        inputPassword.isEnabled = !enabled
+    }
 }

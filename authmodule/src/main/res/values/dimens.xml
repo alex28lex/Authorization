@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Naming in accordance with: https://material.io/guidelines/style/typography.html#typography-styles -->
+    <dimen name="size_small_4">1dp</dimen>
+    <dimen name="size_small_3">2dp</dimen>
+    <dimen name="size_small_2">4dp</dimen>
+    <dimen name="size_small_1">8dp</dimen>
+    <dimen name="size_medium">16dp</dimen>
+    <dimen name="size_large_1">24dp</dimen>
+    <dimen name="size_large_2">32dp</dimen>
+    <dimen name="size_large_3">40dp</dimen>
+    <dimen name="size_large_4">48dp</dimen>
+
+    <!--Text size-->
+    <dimen name="size_text_medium">18sp</dimen>
+    <dimen name="size_text_small">14sp</dimen>
+
+
+    <!-- General elements -->
+
+    <!-- Specific elements -->
+    <dimen name="photo_size_small">32dp</dimen>
+    <dimen name="photo_size_medium">48dp</dimen>
+    <dimen name="photo_size_profile">200dp</dimen>
+    <dimen name="size_corner_small">8dp</dimen>
+    <dimen name="course_badge_inset">4dp</dimen>
+</resources>

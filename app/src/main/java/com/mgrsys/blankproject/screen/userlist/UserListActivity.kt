@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import com.magorasystems.pmtoolpush.screen.authorize.SignInFragment
 import com.mgrsys.blankproject.R
 import com.mgrsys.blankproject.model.entity.User
 import com.mgrsys.blankproject.screen.Screens
@@ -44,7 +45,7 @@ class UserListActivity : BaseActivity() {
 
       override fun createFragment(screenKey: String?, data: Any?): Fragment? {
         return when (screenKey) {
-          Screens.USER_LIST -> UserListFragment.newInstance()
+          Screens.USER_LIST -> SignInFragment.newInstance()
           else -> null
         }
       }

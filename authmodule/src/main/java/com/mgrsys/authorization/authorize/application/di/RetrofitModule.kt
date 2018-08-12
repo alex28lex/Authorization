@@ -2,12 +2,14 @@ package com.mgrsys.blankproject.application.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.mgrsys.authorization.authorize.application.manager.SessionManager
 import com.mgrsys.authorization.authorize.model.datasource.rest.AuthRestClient
+import com.mgrsys.authorization.authorize.model.factory.RxErrorHandlerCallAdapterFactory
 import com.mgrsys.blankproject.model.datasource.rest.config.ServerEndpoint
 import com.mgrsys.blankproject.model.datasource.rest.config.SimpleServerEndpoint
 import com.mgrsys.blankproject.model.datasource.rest.constant.DateConst
 import com.mgrsys.blankproject.model.datasource.rest.constant.RestOptions
-import com.mgrsys.blankproject.model.repository.session.SessionRepository
+
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
@@ -40,7 +42,7 @@ class AuthModuleRetrofitModule {
     fun provideRetrofit(endpoint: ServerEndpoint, gson: Gson, client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
                 .baseUrl(endpoint.url())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addCallAdapterFactory(RxErrorHandlerCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(client)
                 .build()
@@ -84,9 +86,9 @@ class AuthModuleRetrofitModule {
 
     @Singleton
     @Provides
-    fun provideAuthInterceptor(sessionRepository: SessionRepository): Interceptor {
+    fun provideAuthInterceptor(sessionManager: SessionManager): Interceptor {
         return Interceptor { chain ->
-            if (sessionRepository.isAuthorized()) {
+            if (sessionManager.isAuthorize()) {
                 val originalRequest = chain.request()
                 var modifiedRequest = originalRequest
 
@@ -95,7 +97,7 @@ class AuthModuleRetrofitModule {
                     /*Do nothing*/
                 } else {
                     modifiedRequest = originalRequest.newBuilder()
-                            .header(RestOptions.HEADER_KEY_AUTH, RestOptions.HEADER_VALUE_BEARER + sessionRepository.sessionInfo().accessToken)
+                            .header(RestOptions.HEADER_KEY_AUTH, RestOptions.HEADER_VALUE_BEARER + sessionManager.getToken().accessToken)
                             .build()
                 }
 

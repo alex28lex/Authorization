@@ -8,14 +8,14 @@ import ru.whalemare.rxvalidator.ValidateRule
  *
  * @author Viktor Zemtsov
  */
-class EmptyValidator : ValidateRule {
-  override fun errorMessage(): String {
-    // TODO: Inject Context
+class EmptyValidatorRule : ValidateRule {
+    override fun errorMessage(): String {
+        // TODO: Inject Context
 //    return ResExtractor.instance.getString(R.string.error_validation_empty)
-    return ""
-  }
+        return ""
+    }
 
-  override fun validate(data: String?): Boolean {
-    return !data.isNullOrEmpty()
-  }
+    override fun validate(data: String?): Boolean {
+        return !data.isNullOrEmpty()
+    }
 }

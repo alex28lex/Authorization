@@ -1,7 +1,7 @@
 package com.mgrsys.blankproject.application
 
 import android.app.Application
-import com.mgrsys.authorization.authorize.AuthModuleInjector
+import com.mgrsys.authorization.authorize.AuthModuleInit
 
 import com.mgrsys.blankproject.BuildConfig
 import com.mgrsys.blankproject.application.di.AppComponentHolder
@@ -32,7 +32,7 @@ open class App : Application() {
     private fun initDi() {
         // There is no need to unbind this component, because the system kills the process,
         // accordingly, all objects created by this process are destroyed.
-      AuthModuleInjector.buildComponent(this)
+        AuthModuleInit.init(this)
         AppComponentHolder.bindComponent(DaggerAppComponent.builder().appModule(AppModule(this)).build())
     }
 }
