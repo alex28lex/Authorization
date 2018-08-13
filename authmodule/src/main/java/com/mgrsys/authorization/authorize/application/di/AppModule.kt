@@ -6,6 +6,7 @@ import com.mgrsys.authorization.authorize.model.datasource.rest.AuthRestClient
 import com.mgrsys.authorization.authorize.model.repository.AuthRepository
 import com.mgrsys.authorization.authorize.model.repository.MockRestAuthRepository
 import com.mgrsys.authorization.authorize.usecase.SignInUseCase
+import com.mgrsys.authorization.authorize.usecase.SignOutUseCase
 import com.mgrsys.authorization.authorize.usecase.SignUpUseCase
 import dagger.Module
 import dagger.Provides
@@ -36,6 +37,12 @@ class AuthAppModule(private val app: Context) {
     fun provideSignUpUseCase(_authRepository: AuthRepository,
                              _sessionManager: SessionManager): SignUpUseCase {
         return SignUpUseCase(_authRepository, _sessionManager)
+    }
+
+    @Provides
+    fun provideSignOutCase(_authRepository: AuthRepository,
+                           _sessionManager: SessionManager): SignOutUseCase {
+        return SignOutUseCase(_authRepository, _sessionManager)
     }
 
     @Singleton
