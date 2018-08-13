@@ -30,8 +30,8 @@
                     android:enabled="true"
                     android:hint="@string/auth.login.hint"
                     android:imeOptions="actionNext"
-                    android:theme="@style/Widget.App.InputLayout"
-                    android:text="karpenko@magora.systems" />
+                    android:text="karpenko@magora.systems"
+                    android:theme="@style/Widget.App.InputLayout" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -51,12 +51,12 @@
                     android:hint="@string/auth.password.hint"
                     android:imeOptions="actionDone"
                     android:inputType="textPassword"
-                    android:theme="@style/Widget.App.InputLayout"
-                    android:text="1234567890" />
+                    android:text="1234567890"
+                    android:theme="@style/Widget.App.InputLayout" />
 
             </android.support.design.widget.TextInputLayout>
 
-            <FrameLayout
+            <RelativeLayout
                 android:id="@+id/action_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -72,14 +72,25 @@
                     android:visibility="visible"
                     tools:enabled="true" />
 
+                <Button
+                    android:id="@+id/button_sign_up"
+                    style="@style/Widget.App.Button.Action"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/button_sign_in"
+                    android:layout_gravity="center"
+                    android:text="@string/sign_up.button.apply"
+                    android:visibility="visible" />
+
                 <ProgressBar
                     android:id="@+id/progress_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:visibility="gone"
                     tools:visibility="visible" />
-            </FrameLayout>
+            </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

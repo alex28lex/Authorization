@@ -2,12 +2,12 @@ package com.mgrsys.blankproject.application.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.mgrsys.authorization.authorize.application.manager.SessionManager
 import com.mgrsys.blankproject.model.datasource.rest.UsersRestClient
 import com.mgrsys.blankproject.model.datasource.rest.config.ServerEndpoint
 import com.mgrsys.blankproject.model.datasource.rest.config.SimpleServerEndpoint
 import com.mgrsys.blankproject.model.datasource.rest.constant.DateConst
 import com.mgrsys.blankproject.model.datasource.rest.constant.RestOptions
-import com.mgrsys.blankproject.model.repository.session.SessionRepository
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
@@ -33,12 +33,6 @@ class RetrofitModule {
   fun provideUsersRestClient(retrofit: Retrofit): UsersRestClient {
     return retrofit.create(UsersRestClient::class.java)
   }
-
-//  @Singleton
-//  @Provides
-//  fun provideNotificationRestClient(retrofit: Retrofit): NotificationRestClient {
-//    return retrofit.create(NotificationRestClient::class.java)
-//  }
 
   @Singleton
   @Provides
@@ -89,9 +83,9 @@ class RetrofitModule {
 
   @Singleton
   @Provides
-  fun provideAuthInterceptor(sessionRepository: SessionRepository): Interceptor {
+  fun provideAuthInterceptor(sessionManager: SessionManager): Interceptor {
     return Interceptor { chain ->
-      if (sessionRepository.isAuthorized()) {
+      if (sessionManager.isAuthorize()) {
         val originalRequest = chain.request()
         var modifiedRequest = originalRequest
 
@@ -100,7 +94,7 @@ class RetrofitModule {
           /*Do nothing*/
         } else {
           modifiedRequest = originalRequest.newBuilder()
-              .header(RestOptions.HEADER_KEY_AUTH, RestOptions.HEADER_VALUE_BEARER + sessionRepository.sessionInfo().accessToken)
+              .header(RestOptions.HEADER_KEY_AUTH, RestOptions.HEADER_VALUE_BEARER + sessionManager.getToken().accessToken)
               .build()
         }
 

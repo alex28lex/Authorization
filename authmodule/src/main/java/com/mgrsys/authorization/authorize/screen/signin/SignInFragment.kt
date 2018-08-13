@@ -20,10 +20,11 @@ import ru.whalemare.rxvalidator.RxValidator
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject.Error as error
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject.Loading as loading
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject.Success as success
-import kotlinx.android.synthetic.main.fragment_authorize.button_sign_in as authorizeButton
-import kotlinx.android.synthetic.main.fragment_authorize.progress_layout as progressView
-import kotlinx.android.synthetic.main.fragment_authorize.text_input_mail as inputEmail
-import kotlinx.android.synthetic.main.fragment_authorize.text_input_password as inputPassword
+import kotlinx.android.synthetic.main.fragment_sign_in.button_sign_in as authorizeButton
+import kotlinx.android.synthetic.main.fragment_sign_in.progress_layout as progressView
+import kotlinx.android.synthetic.main.fragment_sign_in.text_input_mail as inputEmail
+import kotlinx.android.synthetic.main.fragment_sign_in.text_input_password as inputPassword
+import kotlinx.android.synthetic.main.fragment_sign_in.button_sign_up as signUpButton
 
 /**
  * Developed 2018.
@@ -49,11 +50,11 @@ class SignInFragment : BaseFragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_authorize, container, false)
+        return inflater.inflate(R.layout.fragment_sign_in, container, false)
     }
 
     override fun getContentViewLayoutRes(): Int {
-        return R.layout.fragment_authorize
+        return R.layout.fragment_sign_in
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -74,6 +75,10 @@ class SignInFragment : BaseFragment() {
             )
         }
 
+        signUpButton.setOnClickListener {
+            viewModel.routeToSignUp()
+        }
+
         viewModel.authorizeSuccess.observe(this, Observer {
             when (it) {
                 is loading -> setProgressViewEnabled(true)
@@ -83,10 +88,6 @@ class SignInFragment : BaseFragment() {
                     ErrorHandler.handleError(it.error!!, this@SignInFragment)
                 }
             }
-        })
-        viewModel.navigateToMain.observe(this, Observer {
-            //route
-            showMessage("route to main")
         })
 
     }

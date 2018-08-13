@@ -1,2 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mgrsys.authorization.authmodule" />
+    package="com.mgrsys.authorization.authmodule">
+
+    <application>
+        <activity android:name="com.mgrsys.authorization.authorize.screen.AuthActivity"/>
+    </application>
+
+</manifest>

@@ -1,6 +1,7 @@
 package com.mgrsys.blankproject.application.di
 
 import android.content.Context
+import com.mgrsys.authorization.authorize.application.manager.SessionManager
 import com.mgrsys.blankproject.application.App
 import dagger.Module
 import dagger.Provides
@@ -31,6 +32,11 @@ class AppModule(private val app: App) {
     return cicerone.router
   }
 
+  @Singleton
+  @Provides
+  fun provideSessionManager(): SessionManager {
+    return SessionManager(SessionManager::class.java.simpleName)
+  }
   @Singleton
   @Provides
   fun provideNavigatorHolder(): NavigatorHolder {

@@ -37,8 +37,8 @@ class SignUpFragment : BaseFragment() {
     private lateinit var viewModel: SignUpViewModel
 
     companion object {
-        fun newInstance(): SignInFragment {
-            val fragment = SignInFragment()
+        fun newInstance(): SignUpFragment {
+            val fragment = SignUpFragment()
             val args = Bundle()
             fragment.arguments = args
             return fragment
@@ -82,10 +82,6 @@ class SignUpFragment : BaseFragment() {
                     ErrorHandler.handleError(it.error!!, this@SignUpFragment)
                 }
             }
-        })
-        viewModel.navigateToMain.observe(this, Observer {
-            //route
-            showMessage("route to main")
         })
 
     }

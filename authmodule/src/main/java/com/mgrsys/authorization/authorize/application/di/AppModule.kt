@@ -10,6 +10,9 @@ import com.mgrsys.authorization.authorize.usecase.SignOutUseCase
 import com.mgrsys.authorization.authorize.usecase.SignUpUseCase
 import dagger.Module
 import dagger.Provides
+import ru.terrakok.cicerone.Cicerone
+import ru.terrakok.cicerone.NavigatorHolder
+import ru.terrakok.cicerone.Router
 import javax.inject.Singleton
 
 /**
@@ -20,11 +23,24 @@ import javax.inject.Singleton
  */
 @Module
 class AuthAppModule(private val app: Context) {
+    private val cicerone: Cicerone<Router> = Cicerone.create()
 
     @Singleton
     @Provides
     fun provideContext(): Context {
         return app
+    }
+
+    @Singleton
+    @Provides
+    fun provideRouter(): Router {
+        return cicerone.router
+    }
+
+    @Singleton
+    @Provides
+    fun provideNavigatorHolder(): NavigatorHolder {
+        return cicerone.navigatorHolder
     }
 
     @Provides
