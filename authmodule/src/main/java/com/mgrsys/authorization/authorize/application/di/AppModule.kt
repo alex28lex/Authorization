@@ -3,9 +3,10 @@ package com.mgrsys.blankproject.application.di
 import android.content.Context
 import com.mgrsys.authorization.authorize.application.manager.SessionManager
 import com.mgrsys.authorization.authorize.model.datasource.rest.AuthRestClient
-import com.mgrsys.authorization.authorize.model.repository.users.AuthRepository
+import com.mgrsys.authorization.authorize.model.repository.AuthRepository
+import com.mgrsys.authorization.authorize.model.repository.MockRestAuthRepository
 import com.mgrsys.authorization.authorize.usecase.SignInUseCase
-import com.mgrsys.blankproject.model.repository.users.RestAuthRepository
+import com.mgrsys.authorization.authorize.usecase.SignUpUseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -31,6 +32,12 @@ class AuthAppModule(private val app: Context) {
         return SignInUseCase(_authRepository, _sessionManager)
     }
 
+    @Provides
+    fun provideSignUpUseCase(_authRepository: AuthRepository,
+                             _sessionManager: SessionManager): SignUpUseCase {
+        return SignUpUseCase(_authRepository, _sessionManager)
+    }
+
     @Singleton
     @Provides
     fun provideSessionManager(): SessionManager {
@@ -40,7 +47,7 @@ class AuthAppModule(private val app: Context) {
     @Provides
     @Singleton
     fun provideAuthRepository(_authRestClient: AuthRestClient): AuthRepository {
-        return RestAuthRepository(_authRestClient)
+        return MockRestAuthRepository(_authRestClient)
     }
 
 }

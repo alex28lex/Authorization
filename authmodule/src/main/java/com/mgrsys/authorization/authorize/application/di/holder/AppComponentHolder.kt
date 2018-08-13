@@ -1,5 +1,5 @@
-package com.mgrsys.blankproject.application.di
 
+import com.mgrsys.blankproject.application.di.AuthModuleComponent
 import com.mgrsys.blankproject.application.di.holder.BaseComponentHolder
 
 /**

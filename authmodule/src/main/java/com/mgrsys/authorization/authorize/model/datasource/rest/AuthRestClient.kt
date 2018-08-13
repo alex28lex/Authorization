@@ -2,9 +2,11 @@ package com.mgrsys.authorization.authorize.model.datasource.rest
 
 
 import com.magorasystems.protocolapi.request.auth.ClientAuthRequest
-import com.magorasystems.protocolapi.response.Response
 import com.magorasystems.protocolapi.response.SuccessEmptyResponse
 import com.mgrsys.authorization.authorize.model.dataobject.AuthorizeResponse
+import com.mgrsys.authorization.authorize.model.dataobject.ClientRegistrationRequest
+import com.mgrsys.authorization.authorize.model.dataobject.RegistrationData
+import io.reactivex.Flowable
 import io.reactivex.Single
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -18,12 +20,12 @@ Developed by Magora Team (magora-systems.com). 2018 .
  */
 interface AuthRestClient {
     @POST("auth/token")
-    fun signIn(@Body request: ClientAuthRequest): Single<AuthorizeResponse>
+    fun signIn(@Body request: ClientAuthRequest): Flowable<AuthorizeResponse>
 
     @POST("registration/users")
-    fun signUp(@Body request: ClientAuthRequest): Single<AuthorizeResponse>
+    fun signUp(@Body request: ClientRegistrationRequest<RegistrationData>): Flowable<AuthorizeResponse>
 
     @DELETE("auth/token")
-    fun signOut(): Single<SuccessEmptyResponse>
+    fun signOut(): Flowable<SuccessEmptyResponse>
 
 }

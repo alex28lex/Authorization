@@ -1,6 +1,8 @@
 package com.mgrsys.blankproject.application.di
 
-/*import com.magorasystems.pmtoolpush.screen.signIn.AuthorizeViewModel*/
+
+import com.magorasystems.pmtoolpush.screen.authorize.SignInViewModel
+import com.mgrsys.authorization.authorize.screen.signup.SignUpViewModel
 import dagger.Component
 import javax.inject.Singleton
 
@@ -13,5 +15,6 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [AuthAppModule::class, AuthModuleRetrofitModule::class])
 interface AuthModuleComponent {
-
+    fun inject(injectable: SignInViewModel)
+    fun inject(inViewModel: SignUpViewModel)
 }

@@ -1,4 +1,4 @@
-package com.magorasystems.pmtoolpush.screen.authorize
+package com.mgrsys.authorization.authorize.screen.signup
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
@@ -6,7 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.magorasystems.pmtoolpush.screen.viewobject.auth.CredentialsVo
+import com.magorasystems.pmtoolpush.screen.authorize.SignInFragment
+import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject
 import com.magorasystems.pmtoolpush.util.fragment.BaseFragment
 import com.mgrsys.authorization.authmodule.R
 import com.mgrsys.authorization.authorize.application.manager.ErrorHandler
@@ -20,20 +21,20 @@ import ru.whalemare.rxvalidator.RxValidator
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject.Error as error
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject.Loading as loading
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject.Success as success
-import kotlinx.android.synthetic.main.fragment_authorize.button_sign_in as authorizeButton
-import kotlinx.android.synthetic.main.fragment_authorize.progress_layout as progressView
-import kotlinx.android.synthetic.main.fragment_authorize.text_input_mail as inputEmail
-import kotlinx.android.synthetic.main.fragment_authorize.text_input_password as inputPassword
+import kotlinx.android.synthetic.main.fragment_sign_up.button_sign_up as signUpButton
+import kotlinx.android.synthetic.main.fragment_sign_up.progress_layout as progressView
+import kotlinx.android.synthetic.main.fragment_sign_up.text_input_mail as inputEmail
+import kotlinx.android.synthetic.main.fragment_sign_up.text_input_name as inputName
+import kotlinx.android.synthetic.main.fragment_sign_up.text_input_password as inputPassword
 
 /**
- * Developed 2018.
+Developed by Magora Team (magora-systems.com). 2018 .
  *
- * @author mihaylov
+@author mihaylov
  */
+class SignUpFragment : BaseFragment() {
 
-class SignInFragment : BaseFragment() {
-
-    private lateinit var viewModel: SignInViewModel
+    private lateinit var viewModel: SignUpViewModel
 
     companion object {
         fun newInstance(): SignInFragment {
@@ -49,38 +50,36 @@ class SignInFragment : BaseFragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_authorize, container, false)
+        return inflater.inflate(R.layout.fragment_sign_up, container, false)
     }
 
     override fun getContentViewLayoutRes(): Int {
-        return R.layout.fragment_authorize
+        return R.layout.fragment_sign_up
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(SignInViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(SignUpViewModel::class.java)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         fieldsValidation()
-        authorizeButton.setOnClickListener {
-            viewModel.authorize(
-                    CredentialsVo(
-                            inputEmail.editText?.text.toString(),
-                            inputPassword.editText?.text.toString()
-                    )
+        signUpButton.setOnClickListener {
+            viewModel.signUp(
+                    inputEmail.editText?.text.toString(),
+                    inputPassword.editText?.text.toString(),
+                    inputName.editText?.text.toString()
             )
         }
 
-        viewModel.authorizeSuccess.observe(this, Observer {
+        viewModel.signUpSuccess.observe(this, Observer {
             when (it) {
-                is loading -> setProgressViewEnabled(true)
-                is success -> setProgressViewEnabled(false)
-                is error -> {
+                is ViewObject.Loading -> setProgressViewEnabled(true)
+                is ViewObject.Success -> setProgressViewEnabled(false)
+                is ViewObject.Error -> {
                     setProgressViewEnabled(false)
-                    ErrorHandler.handleError(it.error!!, this@SignInFragment)
+                    ErrorHandler.handleError(it.error!!, this@SignUpFragment)
                 }
             }
         })
@@ -92,6 +91,11 @@ class SignInFragment : BaseFragment() {
     }
 
     private fun fieldsValidation() {
+        val userNameObservable: Observable<Boolean> = RxValidator(inputName)
+                .apply {
+                    add(EmptyValidatorRule())
+                }.asObservable()
+
         val loginObservable: Observable<Boolean> = RxValidator(inputEmail)
                 .apply {
                     add(EmptyValidatorRule())
@@ -104,10 +108,11 @@ class SignInFragment : BaseFragment() {
                     add(PasswordValidatorRule())
                 }.asObservable()
 
-        viewDisposable = RxCombineValidator(loginObservable, passwordObservable)
+        viewDisposable = RxCombineValidator(userNameObservable, loginObservable, passwordObservable)
                 .asObservable()
                 .distinctUntilChanged()
-                .subscribe { valid -> authorizeButton.isEnabled = valid }
+                .subscribe { valid -> signUpButton.isEnabled = valid }
+
     }
 
     override fun onDestroyView() {
@@ -116,8 +121,8 @@ class SignInFragment : BaseFragment() {
     }
 
 
-    private fun setProgressViewEnabled(enabled: Boolean) {
-        authorizeButton.isEnabled = !enabled
+    fun setProgressViewEnabled(enabled: Boolean) {
+        signUpButton.isEnabled = !enabled
         progressView.visibility = if (enabled) View.VISIBLE else View.GONE
         inputEmail.isEnabled = !enabled
         inputPassword.isEnabled = !enabled
