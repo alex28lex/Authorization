@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
 
-        <activity android:name="com.mgrsys.authorization.authorize.screen.AuthActivity">
+        <activity android:name=".screen.AuthActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

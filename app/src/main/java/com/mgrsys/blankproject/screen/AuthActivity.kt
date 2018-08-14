@@ -1,4 +1,4 @@
-package com.mgrsys.authorization.authorize.screen
+package com.mgrsys.blankproject.screen
 
 import android.content.Context
 import android.content.Intent
@@ -7,8 +7,10 @@ import android.support.v4.app.Fragment
 import com.magorasystems.pmtoolpush.screen.authorize.ChangePassFragment
 import com.magorasystems.pmtoolpush.screen.authorize.SignInFragment
 import com.mgrsys.authorization.authmodule.R
+import com.mgrsys.authorization.authorize.screen.Screens
 import com.mgrsys.authorization.authorize.screen.signup.SignUpFragment
 import com.mgrsys.blankproject.screen.base.BaseActivity
+import com.mgrsys.blankproject.screen.userlist.UserListFragment
 import ru.terrakok.cicerone.Navigator
 
 /**
@@ -42,7 +44,7 @@ class AuthActivity : BaseActivity() {
                 return when (screenKey) {
                     Screens.SIGN_IN -> SignInFragment.newInstance()
                     Screens.SIGN_UP -> SignUpFragment.newInstance()
-                    Screens.MAIN -> MainFragment.newInstance()
+                    Screens.MAIN -> UserListFragment.newInstance()
                     Screens.CHANGE_PASS -> ChangePassFragment.newInstance()
                     else -> null
                 }
