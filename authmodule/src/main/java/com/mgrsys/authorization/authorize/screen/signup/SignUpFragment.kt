@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.magorasystems.pmtoolpush.screen.authorize.SignInFragment
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject
 import com.magorasystems.pmtoolpush.util.fragment.BaseFragment
 import com.mgrsys.authorization.authmodule.R
@@ -48,10 +47,6 @@ class SignUpFragment : BaseFragment() {
 
     var viewDisposable: Disposable? = null
 
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_sign_up, container, false)
-    }
 
     override fun getContentViewLayoutRes(): Int {
         return R.layout.fragment_sign_up

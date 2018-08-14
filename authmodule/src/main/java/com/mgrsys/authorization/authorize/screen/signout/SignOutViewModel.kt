@@ -1,5 +1,6 @@
 package com.mgrsys.authorization.authorize.screen.signout
 
+import AppComponentHolder
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
@@ -23,6 +24,10 @@ class SignOutViewModel : ViewModel() {
     @Inject
     lateinit var router: Router
 
+    init {
+        AppComponentHolder.component()?.inject(this)
+    }
+
     private val _navigateToLogin = MutableLiveData<Unit>()
     val navigateToMain: LiveData<Unit>
         get() = _navigateToLogin
@@ -39,7 +44,7 @@ class SignOutViewModel : ViewModel() {
                 .subscribe(
                         { _authorizeSuccess.value = ViewObject.Success(Unit) },
                         { _authorizeSuccess.value = ViewObject.Error(it) },
-                        { router.navigateTo(Screens.SIGN_IN)}
+                        { router.navigateTo(Screens.SIGN_IN) }
                 )
     }
 }

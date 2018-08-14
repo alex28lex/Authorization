@@ -6,6 +6,7 @@ import com.magorasystems.protocolapi.response.SuccessEmptyResponse
 import com.magorasystems.protocolapi.response.auth.AuthResponseData
 import com.magorasystems.protocolapi.response.auth.StringAuthInfo
 import com.mgrsys.authorization.authorize.model.dataobject.AuthorizeResponse
+import com.mgrsys.authorization.authorize.model.dataobject.ChangePassData
 import com.mgrsys.authorization.authorize.model.dataobject.ClientRegistrationRequest
 import com.mgrsys.authorization.authorize.model.dataobject.RegistrationData
 import com.mgrsys.authorization.authorize.model.datasource.rest.AuthRestClient
@@ -21,7 +22,6 @@ import javax.inject.Inject
 class MockRestAuthRepository @Inject constructor(
         private val usersRestClient: AuthRestClient
 ) : AuthRepository {
-
 
 
     override fun signIn(request: ClientAuthRequest): Flowable<AuthorizeResponse> {
@@ -45,6 +45,14 @@ class MockRestAuthRepository @Inject constructor(
     }
 
     override fun signOut(): Flowable<SuccessEmptyResponse> {
+        return Flowable.create({ emitter ->
+            val authorizeResponse = SuccessEmptyResponse(ResponseCodes.SUCCESS_CODE)
+            emitter.onNext(authorizeResponse)
+            emitter.onComplete()
+        }, BackpressureStrategy.DROP)
+    }
+
+    override fun changePass(request: ChangePassData): Flowable<SuccessEmptyResponse> {
         return Flowable.create({ emitter ->
             val authorizeResponse = SuccessEmptyResponse(ResponseCodes.SUCCESS_CODE)
             emitter.onNext(authorizeResponse)

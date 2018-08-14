@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import com.magorasystems.pmtoolpush.screen.authorize.ChangePassFragment
 import com.magorasystems.pmtoolpush.screen.authorize.SignInFragment
 import com.mgrsys.authorization.authmodule.R
 import com.mgrsys.authorization.authorize.screen.signup.SignUpFragment
@@ -32,7 +33,7 @@ class AuthActivity : BaseActivity() {
     }
 
     override fun navigator(): Navigator {
-        return object : com.mgrsys.blankproject.screen.base.BaseNavigator(this,R.id.containerViewGroup) {
+        return object : com.mgrsys.blankproject.screen.base.BaseNavigator(this, R.id.containerViewGroup) {
             override fun createIntent(context: Context?, screenKey: String?, data: Any?): Intent? {
                 return null
             }
@@ -42,6 +43,7 @@ class AuthActivity : BaseActivity() {
                     Screens.SIGN_IN -> SignInFragment.newInstance()
                     Screens.SIGN_UP -> SignUpFragment.newInstance()
                     Screens.MAIN -> MainFragment.newInstance()
+                    Screens.CHANGE_PASS -> ChangePassFragment.newInstance()
                     else -> null
                 }
             }

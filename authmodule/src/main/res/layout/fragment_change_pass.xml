@@ -94,13 +94,15 @@
 
     <Button
         android:id="@+id/change_pass_button"
+        style="@style/Widget.App.Button.Action"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/size_medium"
-        android:layout_marginTop="@dimen/size_large_1"
-        android:text="@string/change_pass_button" />
+        android:layout_gravity="center"
+        android:enabled="false"
+        android:text="@string/change_pass_button"
+        android:visibility="visible"
+        tools:enabled="true" />
 
     <ProgressBar
         android:id="@+id/progress"

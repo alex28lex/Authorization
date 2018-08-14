@@ -11,5 +11,6 @@ object Screens {
 
   const val SIGN_IN = TAG + "SIGN_IN"
   const val SIGN_UP = TAG + "SIGN_UP"
+  const val CHANGE_PASS = TAG + "CHANGE_PASS"
   const val MAIN = TAG + "MAIN"
 }

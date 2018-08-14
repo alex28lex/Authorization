@@ -14,4 +14,5 @@
     <string name="change_pass_new_pass">New pass</string>
     <string name="change_pass_repeat_new_pass">Repeat new pass</string>
     <string name="change_pass_button">Change pass</string>
+    <string name="error_validation_empty">Field must not be empty</string>
 </resources>

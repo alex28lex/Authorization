@@ -5,6 +5,7 @@ import com.mgrsys.authorization.authorize.application.manager.SessionManager
 import com.mgrsys.authorization.authorize.model.datasource.rest.AuthRestClient
 import com.mgrsys.authorization.authorize.model.repository.AuthRepository
 import com.mgrsys.authorization.authorize.model.repository.MockRestAuthRepository
+import com.mgrsys.authorization.authorize.usecase.ChangePassUseCase
 import com.mgrsys.authorization.authorize.usecase.SignInUseCase
 import com.mgrsys.authorization.authorize.usecase.SignOutUseCase
 import com.mgrsys.authorization.authorize.usecase.SignUpUseCase
@@ -47,6 +48,11 @@ class AuthAppModule(private val app: Context) {
     fun provideSignInUseCase(_authRepository: AuthRepository,
                              _sessionManager: SessionManager): SignInUseCase {
         return SignInUseCase(_authRepository, _sessionManager)
+    }
+
+    @Provides
+    fun provideChangePassUseCase(_authRepository: AuthRepository): ChangePassUseCase {
+        return ChangePassUseCase(_authRepository)
     }
 
     @Provides
