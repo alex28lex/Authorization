@@ -87,10 +87,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:enabled="false"
+
                     android:text="@string/sign_up.button.apply"
                     android:visibility="visible"
-                    tools:enabled="true" />
+                     />
 
                 <ProgressBar
                     android:id="@+id/progress_layout"

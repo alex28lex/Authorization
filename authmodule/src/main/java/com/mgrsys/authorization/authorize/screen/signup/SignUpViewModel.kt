@@ -6,12 +6,17 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject
 import com.mgrsys.authorization.authorize.model.dataobject.RegistrationData
+import com.mgrsys.authorization.authorize.model.validator.PasswordValidatorRule
 import com.mgrsys.authorization.authorize.screen.Screens
 import com.mgrsys.authorization.authorize.usecase.SignUpUseCase
+import com.mgrsys.blankproject.model.validator.EmailValidateRule
+import com.mgrsys.blankproject.model.validator.EmptyValidatorRule
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import ru.terrakok.cicerone.Router
+import ru.whalemare.rxvalidator.Validator
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 /**
@@ -34,6 +39,17 @@ class SignUpViewModel : ViewModel() {
     val signUpSuccess: LiveData<ViewObject<Unit>>
         get() = _signUpSuccess
 
+    private val _passwordError = MutableLiveData<String>()
+    val passwordError: LiveData<String>
+        get() = _passwordError
+
+    private val _loginError = MutableLiveData<String>()
+    val loginError: LiveData<String>
+        get() = _loginError
+
+    private val _nameError = MutableLiveData<String>()
+    val nameError: LiveData<String>
+        get() = _nameError
 
     private var _signUpDisposable: Disposable? = null
 
@@ -42,21 +58,67 @@ class SignUpViewModel : ViewModel() {
     }
 
     fun signUp(login: String, password: String, userName: String) {
-        _signUpDisposable?.dispose()
+        if (validateName(userName) and validateLogin(login) and validatePassword(password)) {
+            _signUpDisposable?.dispose()
 
-        _signUpSuccess.value = ViewObject.Loading()
-        _signUpDisposable = signUpUseCase.signUp(login, password, RegistrationData(userName))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { _signUpSuccess.value = ViewObject.Success(Unit) },
-                        { _signUpSuccess.value = ViewObject.Error(it) },
-                        { router.navigateTo(Screens.MAIN) }
-                )
+            _signUpSuccess.value = ViewObject.Loading()
+            _signUpDisposable = signUpUseCase.signUp(login, password, RegistrationData(userName))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            { _signUpSuccess.value = ViewObject.Success(Unit) },
+                            { _signUpSuccess.value = ViewObject.Error(it) },
+                            { router.navigateTo(Screens.MAIN) })
+        }
+    }
+
+
+    fun validatePassword(password: String): Boolean {
+        val isValid = AtomicBoolean(false)
+        val passwordValidatorsComposer = Validator()
+        passwordValidatorsComposer.add(EmptyValidatorRule())
+        passwordValidatorsComposer.add(PasswordValidatorRule())
+
+        passwordValidatorsComposer.validate(
+                password,
+                onSuccess = { isValid.set(true) },
+                onError = { s: String -> _passwordError.value = s }
+        )
+
+        return isValid.get()
+    }
+
+    fun validateLogin(login: String): Boolean {
+        val isValid = AtomicBoolean(false)
+        val loginValidatorsComposer = Validator()
+        loginValidatorsComposer.add(EmptyValidatorRule())
+        loginValidatorsComposer.add(EmailValidateRule())
+
+        loginValidatorsComposer.validate(
+                login,
+                onSuccess = { isValid.set(true) },
+                onError = { s: String -> _loginError.value = s }
+        )
+
+        return isValid.get()
+    }
+
+    fun validateName(name: String): Boolean {
+        val isValid = AtomicBoolean(false)
+        val nameValidatorsComposer = Validator()
+        nameValidatorsComposer.add(EmptyValidatorRule())
+
+        nameValidatorsComposer.validate(
+                name,
+                onSuccess = { isValid.set(true) },
+                onError = { s: String -> _nameError.value = s }
+        )
+
+        return isValid.get()
     }
 
     override fun onCleared() {
         super.onCleared()
-        //_authorizeDisposable?.dispose()
+        _signUpDisposable?.dispose()
     }
 }

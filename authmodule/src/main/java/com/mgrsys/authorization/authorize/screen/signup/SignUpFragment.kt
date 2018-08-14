@@ -3,24 +3,21 @@ package com.mgrsys.authorization.authorize.screen.signup
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject
 import com.magorasystems.pmtoolpush.util.fragment.BaseFragment
 import com.mgrsys.authorization.authmodule.R
 import com.mgrsys.authorization.authorize.application.manager.ErrorHandler
-import com.mgrsys.authorization.authorize.model.validator.PasswordValidatorRule
-import com.mgrsys.blankproject.model.validator.EmailValidateRule
-import com.mgrsys.blankproject.model.validator.EmptyValidatorRule
-import io.reactivex.Observable
+import com.mgrsys.authorization.authorize.util.FieldTextWatcher
+import com.mgrsys.authorization.authorize.util.ViewUtils
 import io.reactivex.disposables.Disposable
-import ru.whalemare.rxvalidator.RxCombineValidator
-import ru.whalemare.rxvalidator.RxValidator
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject.Error as error
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject.Loading as loading
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject.Success as success
 import kotlinx.android.synthetic.main.fragment_sign_up.button_sign_up as signUpButton
+import kotlinx.android.synthetic.main.fragment_sign_up.edit_input_mail as editEmail
+import kotlinx.android.synthetic.main.fragment_sign_up.edit_input_name as editName
+import kotlinx.android.synthetic.main.fragment_sign_up.edit_input_password as editPassword
 import kotlinx.android.synthetic.main.fragment_sign_up.progress_layout as progressView
 import kotlinx.android.synthetic.main.fragment_sign_up.text_input_mail as inputEmail
 import kotlinx.android.synthetic.main.fragment_sign_up.text_input_name as inputName
@@ -31,7 +28,7 @@ Developed by Magora Team (magora-systems.com). 2018 .
  *
 @author mihaylov
  */
-class SignUpFragment : BaseFragment() {
+class SignUpFragment : BaseFragment(), SignUpContract.View {
 
     private lateinit var viewModel: SignUpViewModel
 
@@ -59,7 +56,7 @@ class SignUpFragment : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        fieldsValidation()
+        initViews()
         signUpButton.setOnClickListener {
             viewModel.signUp(
                     inputEmail.editText?.text.toString(),
@@ -78,33 +75,41 @@ class SignUpFragment : BaseFragment() {
                 }
             }
         })
-
+        viewModel.loginError.observe(this, Observer { it?.let { setEmailValidationError(it) } })
+        viewModel.passwordError.observe(this, Observer { it?.let { setPasswordValidationError(it) } })
+        viewModel.nameError.observe(this, Observer { it?.let { setNameValidationError(it) } })
     }
 
-    private fun fieldsValidation() {
-        val userNameObservable: Observable<Boolean> = RxValidator(inputName)
-                .apply {
-                    add(EmptyValidatorRule())
-                }.asObservable()
-
-        val loginObservable: Observable<Boolean> = RxValidator(inputEmail)
-                .apply {
-                    add(EmptyValidatorRule())
-                    add(EmailValidateRule())
-                }.asObservable()
-
-        val passwordObservable: Observable<Boolean> = RxValidator(inputPassword)
-                .apply {
-                    add(EmptyValidatorRule())
-                    add(PasswordValidatorRule())
-                }.asObservable()
-
-        viewDisposable = RxCombineValidator(userNameObservable, loginObservable, passwordObservable)
-                .asObservable()
-                .distinctUntilChanged()
-                .subscribe { valid -> signUpButton.isEnabled = valid }
-
+    private fun initViews() {
+        editEmail.addTextChangedListener(object : FieldTextWatcher() {
+            override fun afterTextChanged(s: String) {
+                setEmailValidationError(null)
+            }
+        })
+        editPassword.addTextChangedListener(object : FieldTextWatcher() {
+            override fun afterTextChanged(s: String) {
+                setPasswordValidationError(null)
+            }
+        })
+        editName.addTextChangedListener(object : FieldTextWatcher() {
+            override fun afterTextChanged(s: String) {
+                setNameValidationError(null)
+            }
+        })
     }
+
+    override fun setPasswordValidationError(message: String?) {
+        ViewUtils.setInputLayoutError(inputPassword, message)
+    }
+
+    override fun setEmailValidationError(message: String?) {
+        ViewUtils.setInputLayoutError(inputEmail, message)
+    }
+
+    override fun setNameValidationError(message: String?) {
+        ViewUtils.setInputLayoutError(inputName, message)
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -112,7 +117,7 @@ class SignUpFragment : BaseFragment() {
     }
 
 
-    fun setProgressViewEnabled(enabled: Boolean) {
+    override fun setProgressViewEnabled(enabled: Boolean) {
         signUpButton.isEnabled = !enabled
         progressView.visibility = if (enabled) View.VISIBLE else View.GONE
         inputEmail.isEnabled = !enabled
