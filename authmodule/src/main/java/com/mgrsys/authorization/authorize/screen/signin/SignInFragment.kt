@@ -3,28 +3,25 @@ package com.magorasystems.pmtoolpush.screen.authorize
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.magorasystems.pmtoolpush.screen.viewobject.auth.CredentialsVo
 import com.magorasystems.pmtoolpush.util.fragment.BaseFragment
 import com.mgrsys.authorization.authmodule.R
 import com.mgrsys.authorization.authorize.application.manager.ErrorHandler
-import com.mgrsys.authorization.authorize.model.validator.PasswordValidatorRule
-import com.mgrsys.blankproject.model.validator.EmailValidateRule
-import com.mgrsys.blankproject.model.validator.EmptyValidatorRule
-import io.reactivex.Observable
+import com.mgrsys.authorization.authorize.screen.signin.SignInContract
+import com.mgrsys.authorization.authorize.util.FieldTextWatcher
+import com.mgrsys.authorization.authorize.util.ViewUtils
 import io.reactivex.disposables.Disposable
-import ru.whalemare.rxvalidator.RxCombineValidator
-import ru.whalemare.rxvalidator.RxValidator
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject.Error as error
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject.Loading as loading
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject.Success as success
 import kotlinx.android.synthetic.main.fragment_sign_in.button_sign_in as authorizeButton
+import kotlinx.android.synthetic.main.fragment_sign_in.button_sign_up as signUpButton
+import kotlinx.android.synthetic.main.fragment_sign_in.edit_input_mail as editEmail
+import kotlinx.android.synthetic.main.fragment_sign_in.edit_input_password as editPassword
 import kotlinx.android.synthetic.main.fragment_sign_in.progress_layout as progressView
 import kotlinx.android.synthetic.main.fragment_sign_in.text_input_mail as inputEmail
 import kotlinx.android.synthetic.main.fragment_sign_in.text_input_password as inputPassword
-import kotlinx.android.synthetic.main.fragment_sign_in.button_sign_up as signUpButton
 
 /**
  * Developed 2018.
@@ -32,7 +29,7 @@ import kotlinx.android.synthetic.main.fragment_sign_in.button_sign_up as signUpB
  * @author mihaylov
  */
 
-class SignInFragment : BaseFragment() {
+class SignInFragment : BaseFragment(), SignInContract.View {
 
     private lateinit var viewModel: SignInViewModel
 
@@ -60,8 +57,7 @@ class SignInFragment : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        fieldsValidation()
+        initViews()
         authorizeButton.setOnClickListener {
             viewModel.authorize(
                     CredentialsVo(
@@ -85,26 +81,30 @@ class SignInFragment : BaseFragment() {
                 }
             }
         })
+        viewModel.loginError.observe(this, Observer { it?.let { setEmailValidationError(it) } })
+        viewModel.passwordError.observe(this, Observer { it?.let { setPasswordValidationError(it) } })
 
     }
 
-    private fun fieldsValidation() {
-        val loginObservable: Observable<Boolean> = RxValidator(inputEmail)
-                .apply {
-                    add(EmptyValidatorRule())
-                    add(EmailValidateRule())
-                }.asObservable()
+    private fun initViews() {
+        editEmail.addTextChangedListener(object : FieldTextWatcher() {
+            override fun afterTextChanged(s: String) {
+                setEmailValidationError(null)
+            }
+        })
+        editPassword.addTextChangedListener(object : FieldTextWatcher() {
+            override fun afterTextChanged(s: String) {
+                setPasswordValidationError(null)
+            }
+        })
+    }
 
-        val passwordObservable: Observable<Boolean> = RxValidator(inputPassword)
-                .apply {
-                    add(EmptyValidatorRule())
-                    add(PasswordValidatorRule())
-                }.asObservable()
+    override fun setPasswordValidationError(message: String?) {
+        ViewUtils.setInputLayoutError(inputPassword, message)
+    }
 
-        viewDisposable = RxCombineValidator(loginObservable, passwordObservable)
-                .asObservable()
-                .distinctUntilChanged()
-                .subscribe { valid -> authorizeButton.isEnabled = valid }
+    override fun setEmailValidationError(message: String?) {
+        ViewUtils.setInputLayoutError(inputEmail, message)
     }
 
     override fun onDestroyView() {
@@ -113,7 +113,7 @@ class SignInFragment : BaseFragment() {
     }
 
 
-    private fun setProgressViewEnabled(enabled: Boolean) {
+    override fun setProgressViewEnabled(enabled: Boolean) {
         authorizeButton.isEnabled = !enabled
         progressView.visibility = if (enabled) View.VISIBLE else View.GONE
         inputEmail.isEnabled = !enabled
