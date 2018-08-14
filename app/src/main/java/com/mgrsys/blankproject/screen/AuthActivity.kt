@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.magorasystems.pmtoolpush.screen.authorize.ChangePassFragment
 import com.magorasystems.pmtoolpush.screen.authorize.SignInFragment
-import com.mgrsys.authorization.authmodule.R
 import com.mgrsys.authorization.authorize.screen.Screens
 import com.mgrsys.authorization.authorize.screen.signup.SignUpFragment
+import com.mgrsys.blankproject.R
 import com.mgrsys.blankproject.screen.base.BaseActivity
 import com.mgrsys.blankproject.screen.userlist.UserListFragment
 import ru.terrakok.cicerone.Navigator
@@ -29,7 +29,7 @@ class AuthActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_auth)
+        setContentView(R.layout.auth_activity)
 
         router.replaceScreen(Screens.SIGN_IN)
     }
