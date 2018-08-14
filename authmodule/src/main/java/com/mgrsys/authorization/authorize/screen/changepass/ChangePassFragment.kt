@@ -7,16 +7,17 @@ import android.view.View
 import com.magorasystems.pmtoolpush.util.fragment.BaseFragment
 import com.mgrsys.authorization.authmodule.R
 import com.mgrsys.authorization.authorize.application.manager.ErrorHandler
-import com.mgrsys.authorization.authorize.model.validator.PasswordValidatorRule
-import com.mgrsys.blankproject.model.validator.EmptyValidatorRule
-import io.reactivex.Observable
+import com.mgrsys.authorization.authorize.screen.changepass.ChangePassContract
+import com.mgrsys.authorization.authorize.util.FieldTextWatcher
+import com.mgrsys.authorization.authorize.util.ViewUtils
 import io.reactivex.disposables.Disposable
-import ru.whalemare.rxvalidator.RxCombineValidator
-import ru.whalemare.rxvalidator.RxValidator
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject.Error as error
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject.Loading as loading
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject.Success as success
 import kotlinx.android.synthetic.main.fragment_change_pass.change_pass_button as changePassButton
+import kotlinx.android.synthetic.main.fragment_change_pass.edit_input_new_password as editNewPass
+import kotlinx.android.synthetic.main.fragment_change_pass.edit_input_old_password as editOldPass
+import kotlinx.android.synthetic.main.fragment_change_pass.edit_input_repeat_new_password as editRepeatNewPass
 import kotlinx.android.synthetic.main.fragment_change_pass.progress as progressView
 import kotlinx.android.synthetic.main.fragment_change_pass.text_input_new_password as inputNewPass
 import kotlinx.android.synthetic.main.fragment_change_pass.text_input_old_password as inputOldPass
@@ -28,7 +29,7 @@ import kotlinx.android.synthetic.main.fragment_change_pass.text_input_repeat_new
  * @author mihaylov
  */
 
-class ChangePassFragment : BaseFragment() {
+class ChangePassFragment : BaseFragment(), ChangePassContract.View {
 
     private lateinit var viewModel: ChangePassViewModel
 
@@ -56,8 +57,8 @@ class ChangePassFragment : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        initViews()
 
-        fieldsValidation()
         changePassButton.setOnClickListener {
             viewModel.changePass(
                     inputOldPass.editText?.text.toString(),
@@ -77,32 +78,40 @@ class ChangePassFragment : BaseFragment() {
                 }
             }
         })
+        viewModel.oldPasswordError.observe(this, Observer { it?.let { setOldPasswordValidationError(it) } })
+        viewModel.newPasswordError.observe(this, Observer { it?.let { setNewPasswordValidationError(it) } })
+        viewModel.repeatNewPasswordError.observe(this, Observer { it?.let { setRepeatNewPasswordValidationError(it) } })
 
     }
 
-    private fun fieldsValidation() {
-        val oldPassObservable: Observable<Boolean> = RxValidator(inputOldPass)
-                .apply {
-                    add(EmptyValidatorRule())
-                    add(PasswordValidatorRule())
-                }.asObservable()
+    private fun initViews() {
+        editOldPass.addTextChangedListener(object : FieldTextWatcher() {
+            override fun afterTextChanged(s: String) {
+                setOldPasswordValidationError(null)
+            }
+        })
+        editNewPass.addTextChangedListener(object : FieldTextWatcher() {
+            override fun afterTextChanged(s: String) {
+                setNewPasswordValidationError(null)
+            }
+        })
+        editRepeatNewPass.addTextChangedListener(object : FieldTextWatcher() {
+            override fun afterTextChanged(s: String) {
+                setRepeatNewPasswordValidationError(null)
+            }
+        })
+    }
 
-        val newPassObservable: Observable<Boolean> = RxValidator(inputNewPass)
-                .apply {
-                    add(EmptyValidatorRule())
-                    add(PasswordValidatorRule())
-                }.asObservable()
+    override fun setOldPasswordValidationError(message: String?) {
+        ViewUtils.setInputLayoutError(inputOldPass, message)
+    }
 
-        val repeatNewPassObservable: Observable<Boolean> = RxValidator(inputRepeatNewPass)
-                .apply {
-                    add(EmptyValidatorRule())
-                    add(PasswordValidatorRule())
-                }.asObservable()
+    override fun setNewPasswordValidationError(message: String?) {
+        ViewUtils.setInputLayoutError(inputNewPass, message)
+    }
 
-        viewDisposable = RxCombineValidator(oldPassObservable, newPassObservable, repeatNewPassObservable)
-                .asObservable()
-                .distinctUntilChanged()
-                .subscribe { valid -> changePassButton.isEnabled = valid }
+    override fun setRepeatNewPasswordValidationError(message: String?) {
+        ViewUtils.setInputLayoutError(inputRepeatNewPass, message)
     }
 
     override fun onDestroyView() {
@@ -111,7 +120,7 @@ class ChangePassFragment : BaseFragment() {
     }
 
 
-    private fun setProgressViewEnabled(enabled: Boolean) {
+    override fun setProgressViewEnabled(enabled: Boolean) {
         changePassButton.isEnabled = !enabled
         progressView.visibility = if (enabled) View.VISIBLE else View.GONE
     }

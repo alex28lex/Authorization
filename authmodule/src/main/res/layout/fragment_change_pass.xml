@@ -99,10 +99,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center"
-        android:enabled="false"
-        android:text="@string/change_pass_button"
-        android:visibility="visible"
-        tools:enabled="true" />
+        android:text="@string/change_pass_button" />
 
     <ProgressBar
         android:id="@+id/progress"

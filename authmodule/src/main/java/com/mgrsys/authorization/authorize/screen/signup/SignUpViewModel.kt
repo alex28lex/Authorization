@@ -31,10 +31,6 @@ class SignUpViewModel : ViewModel() {
     @Inject
     lateinit var router: Router
 
-    private val _navigateToMain = MutableLiveData<Unit>()
-    val navigateToMain: LiveData<Unit>
-        get() = _navigateToMain
-
     private val _signUpSuccess = MutableLiveData<ViewObject<Unit>>()
     val signUpSuccess: LiveData<ViewObject<Unit>>
         get() = _signUpSuccess
