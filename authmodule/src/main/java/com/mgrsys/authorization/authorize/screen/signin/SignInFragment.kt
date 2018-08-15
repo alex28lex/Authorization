@@ -7,8 +7,6 @@ import android.view.View
 import com.magorasystems.pmtoolpush.screen.viewobject.auth.CredentialsVo
 import com.magorasystems.pmtoolpush.util.fragment.BaseFragment
 import com.mgrsys.authorization.authmodule.R
-import com.mgrsys.authorization.authorize.application.manager.ErrorHandler
-import com.mgrsys.authorization.authorize.screen.signin.SignInContract
 import com.mgrsys.authorization.authorize.util.FieldTextWatcher
 import com.mgrsys.authorization.authorize.util.ViewUtils
 import io.reactivex.disposables.Disposable
@@ -29,7 +27,7 @@ import kotlinx.android.synthetic.main.fragment_sign_in.text_input_password as in
  * @author mihaylov
  */
 
-class SignInFragment : BaseFragment(), SignInContract.View {
+class SignInFragment : BaseFragment() {
 
     private lateinit var viewModel: SignInViewModel
 
@@ -77,7 +75,7 @@ class SignInFragment : BaseFragment(), SignInContract.View {
                 is success -> setProgressViewEnabled(false)
                 is error -> {
                     setProgressViewEnabled(false)
-                    ErrorHandler.handleError(it.error!!, this@SignInFragment)
+                    showMessage(it.error)
                 }
             }
         })
@@ -99,11 +97,11 @@ class SignInFragment : BaseFragment(), SignInContract.View {
         })
     }
 
-    override fun setPasswordValidationError(message: String?) {
+    fun setPasswordValidationError(message: String?) {
         ViewUtils.setInputLayoutError(inputPassword, message)
     }
 
-    override fun setEmailValidationError(message: String?) {
+    fun setEmailValidationError(message: String?) {
         ViewUtils.setInputLayoutError(inputEmail, message)
     }
 
@@ -113,7 +111,7 @@ class SignInFragment : BaseFragment(), SignInContract.View {
     }
 
 
-    override fun setProgressViewEnabled(enabled: Boolean) {
+    fun setProgressViewEnabled(enabled: Boolean) {
         authorizeButton.isEnabled = !enabled
         progressView.visibility = if (enabled) View.VISIBLE else View.GONE
         inputEmail.isEnabled = !enabled

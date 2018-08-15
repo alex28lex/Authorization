@@ -7,6 +7,8 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject
 import com.magorasystems.pmtoolpush.screen.viewobject.auth.CredentialsVo
+import com.magorasystems.pmtoolpush.util.livedata.SingleLiveEvent
+import com.mgrsys.authorization.authorize.application.manager.ErrorHandler
 import com.mgrsys.authorization.authorize.model.validator.PasswordValidatorRule
 import com.mgrsys.authorization.authorize.screen.Screens
 import com.mgrsys.authorization.authorize.usecase.SignInUseCase
@@ -32,15 +34,15 @@ class SignInViewModel : ViewModel() {
     @Inject
     lateinit var router: Router
 
-    private val _authorizeSuccess = MutableLiveData<ViewObject<Unit>>()
+    private val _authorizeSuccess = SingleLiveEvent<ViewObject<Unit>>()
     val authorizeSuccess: LiveData<ViewObject<Unit>>
         get() = _authorizeSuccess
 
-    private val _passwordError = MutableLiveData<String>()
+    private val _passwordError = SingleLiveEvent<String>()
     val passwordError: LiveData<String>
         get() = _passwordError
 
-    private val _loginError = MutableLiveData<String>()
+    private val _loginError = SingleLiveEvent<String>()
     val loginError: LiveData<String>
         get() = _loginError
 
@@ -65,7 +67,7 @@ class SignInViewModel : ViewModel() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             { _authorizeSuccess.value = ViewObject.Success(Unit) },
-                            { _authorizeSuccess.value = ViewObject.Error(it) },
+                            { _authorizeSuccess.value = ViewObject.Error(ErrorHandler.parseError(it)) },
                             { router.navigateTo(Screens.MAIN) }
                     )
         }

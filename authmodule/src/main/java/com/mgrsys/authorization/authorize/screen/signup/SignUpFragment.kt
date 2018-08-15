@@ -7,7 +7,6 @@ import android.view.View
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject
 import com.magorasystems.pmtoolpush.util.fragment.BaseFragment
 import com.mgrsys.authorization.authmodule.R
-import com.mgrsys.authorization.authorize.application.manager.ErrorHandler
 import com.mgrsys.authorization.authorize.util.FieldTextWatcher
 import com.mgrsys.authorization.authorize.util.ViewUtils
 import io.reactivex.disposables.Disposable
@@ -28,7 +27,7 @@ Developed by Magora Team (magora-systems.com). 2018 .
  *
 @author mihaylov
  */
-class SignUpFragment : BaseFragment(), SignUpContract.View {
+class SignUpFragment : BaseFragment() {
 
     private lateinit var viewModel: SignUpViewModel
 
@@ -71,7 +70,7 @@ class SignUpFragment : BaseFragment(), SignUpContract.View {
                 is ViewObject.Success -> setProgressViewEnabled(false)
                 is ViewObject.Error -> {
                     setProgressViewEnabled(false)
-                    ErrorHandler.handleError(it.error!!, this@SignUpFragment)
+                    showMessage(it.error)
                 }
             }
         })
@@ -98,15 +97,15 @@ class SignUpFragment : BaseFragment(), SignUpContract.View {
         })
     }
 
-    override fun setPasswordValidationError(message: String?) {
+    fun setPasswordValidationError(message: String?) {
         ViewUtils.setInputLayoutError(inputPassword, message)
     }
 
-    override fun setEmailValidationError(message: String?) {
+    fun setEmailValidationError(message: String?) {
         ViewUtils.setInputLayoutError(inputEmail, message)
     }
 
-    override fun setNameValidationError(message: String?) {
+    fun setNameValidationError(message: String?) {
         ViewUtils.setInputLayoutError(inputName, message)
     }
 
@@ -117,7 +116,7 @@ class SignUpFragment : BaseFragment(), SignUpContract.View {
     }
 
 
-    override fun setProgressViewEnabled(enabled: Boolean) {
+    fun setProgressViewEnabled(enabled: Boolean) {
         signUpButton.isEnabled = !enabled
         progressView.visibility = if (enabled) View.VISIBLE else View.GONE
         inputEmail.isEnabled = !enabled

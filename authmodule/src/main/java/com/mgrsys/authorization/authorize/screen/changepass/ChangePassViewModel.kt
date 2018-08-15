@@ -7,9 +7,9 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject
 import com.mgrsys.authorization.authmodule.R
+import com.mgrsys.authorization.authorize.application.manager.ErrorHandler
 import com.mgrsys.authorization.authorize.application.manager.ResExtractor
 import com.mgrsys.authorization.authorize.model.validator.PasswordValidatorRule
-import com.mgrsys.authorization.authorize.screen.Screens
 import com.mgrsys.authorization.authorize.usecase.ChangePassUseCase
 import com.mgrsys.blankproject.model.validator.EmptyValidatorRule
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -65,7 +65,7 @@ class ChangePassViewModel : ViewModel() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             { _changePassSuccess.value = ViewObject.Success(Unit) },
-                            { _changePassSuccess.value = ViewObject.Error(it) },
+                            { _changePassSuccess.value = ViewObject.Error(ErrorHandler.parseError(it)) },
                             { router.exit() }
                     )
         }

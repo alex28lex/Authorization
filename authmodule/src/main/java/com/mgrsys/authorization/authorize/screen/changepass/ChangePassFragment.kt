@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.view.View
 import com.magorasystems.pmtoolpush.util.fragment.BaseFragment
 import com.mgrsys.authorization.authmodule.R
-import com.mgrsys.authorization.authorize.application.manager.ErrorHandler
-import com.mgrsys.authorization.authorize.screen.changepass.ChangePassContract
 import com.mgrsys.authorization.authorize.util.FieldTextWatcher
 import com.mgrsys.authorization.authorize.util.ViewUtils
 import io.reactivex.disposables.Disposable
@@ -29,7 +27,7 @@ import kotlinx.android.synthetic.main.fragment_change_pass.text_input_repeat_new
  * @author mihaylov
  */
 
-class ChangePassFragment : BaseFragment(), ChangePassContract.View {
+class ChangePassFragment : BaseFragment() {
 
     private lateinit var viewModel: ChangePassViewModel
 
@@ -74,7 +72,7 @@ class ChangePassFragment : BaseFragment(), ChangePassContract.View {
                 is success -> setProgressViewEnabled(false)
                 is error -> {
                     setProgressViewEnabled(false)
-                    ErrorHandler.handleError(it.error!!, this@ChangePassFragment)
+                    showMessage(it.error)
                 }
             }
         })
@@ -102,15 +100,15 @@ class ChangePassFragment : BaseFragment(), ChangePassContract.View {
         })
     }
 
-    override fun setOldPasswordValidationError(message: String?) {
+    fun setOldPasswordValidationError(message: String?) {
         ViewUtils.setInputLayoutError(inputOldPass, message)
     }
 
-    override fun setNewPasswordValidationError(message: String?) {
+    fun setNewPasswordValidationError(message: String?) {
         ViewUtils.setInputLayoutError(inputNewPass, message)
     }
 
-    override fun setRepeatNewPasswordValidationError(message: String?) {
+    fun setRepeatNewPasswordValidationError(message: String?) {
         ViewUtils.setInputLayoutError(inputRepeatNewPass, message)
     }
 
@@ -120,7 +118,7 @@ class ChangePassFragment : BaseFragment(), ChangePassContract.View {
     }
 
 
-    override fun setProgressViewEnabled(enabled: Boolean) {
+    fun setProgressViewEnabled(enabled: Boolean) {
         changePassButton.isEnabled = !enabled
         progressView.visibility = if (enabled) View.VISIBLE else View.GONE
     }

@@ -11,7 +11,6 @@ import com.magorasystems.protocolapi.response.ResponseErrorField;
 import com.magorasystems.protocolapi.response.auth.AuthResponseCodes;
 import com.mgrsys.authorization.authmodule.R;
 import com.mgrsys.authorization.authorize.model.exception.RetrofitException;
-import com.mgrsys.authorization.authorize.model.view.MessageView;
 
 
 /**
@@ -22,8 +21,7 @@ import com.mgrsys.authorization.authorize.model.view.MessageView;
  */
 public final class ErrorHandler {
 
-    public static <VIEW extends MessageView> void handleError(@NonNull Throwable error,
-                                                              @NonNull VIEW view) {
+    public static String parseError(@NonNull Throwable error) {
         error.printStackTrace();
 
         if (error instanceof RetrofitException) {
@@ -44,25 +42,20 @@ public final class ErrorHandler {
                         case AuthResponseCodes.INVALID_CHECK_CODE:
                         case AuthResponseCodes.USER_BLOCKED:
                         case AuthResponseCodes.COMMON_FORBIDDEN_ERROR:
-                            view.showMessage(field.getMessage());
-                            break;
+                            return field.getMessage();
                         default:
-                            view.showMessage(ResExtractor.Companion.getInstance().getString(R.string.error_unknown));
-                            break;
+                            return ResExtractor.Companion.getInstance().getString(R.string.error_unknown);
                     }
                 }
-                return;
             } else if (retrofitException.getKind().equals(RetrofitException.Kind.NETWORK)) {
-                String message = !TextUtils.isEmpty(retrofitException.getMessage()) ?
+                return !TextUtils.isEmpty(retrofitException.getMessage()) ?
                         retrofitException.getMessage() : ResExtractor.Companion.getInstance().getString(R.string.error_network);
-                view.showMessage(message);
-                return;
             } else {
-                view.showMessage(error.getLocalizedMessage());
-                return;
+                return error.getLocalizedMessage();
             }
 
         }
+        return error.getLocalizedMessage();
     }
 
     @Nullable

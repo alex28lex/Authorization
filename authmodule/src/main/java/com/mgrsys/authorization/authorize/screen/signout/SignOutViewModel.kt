@@ -5,6 +5,8 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject
+import com.magorasystems.pmtoolpush.util.livedata.SingleLiveEvent
+import com.mgrsys.authorization.authorize.application.manager.ErrorHandler
 import com.mgrsys.authorization.authorize.screen.Screens
 import com.mgrsys.authorization.authorize.usecase.SignOutUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -28,7 +30,7 @@ class SignOutViewModel : ViewModel() {
         AppComponentHolder.component()?.inject(this)
     }
 
-    private val _navigateToLogin = MutableLiveData<Unit>()
+    private val _navigateToLogin = SingleLiveEvent<Unit>()
     val navigateToMain: LiveData<Unit>
         get() = _navigateToLogin
 
@@ -43,7 +45,7 @@ class SignOutViewModel : ViewModel() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { _authorizeSuccess.value = ViewObject.Success(Unit) },
-                        { _authorizeSuccess.value = ViewObject.Error(it) },
+                        { _authorizeSuccess.value = ViewObject.Error(ErrorHandler.parseError(it)) },
                         { router.navigateTo(Screens.SIGN_IN) }
                 )
     }
