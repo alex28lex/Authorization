@@ -33,6 +33,8 @@ abstract class BaseFragment : Fragment(), MessageView {
     abstract fun getContentViewLayoutRes(): Int
 
     override fun showMessage(message: String) {
-        view?.let { Snackbar.make(it, message, Snackbar.LENGTH_LONG).show() }
+        view?.let {
+            Snackbar.make(it, message, Snackbar.LENGTH_LONG).show()
+        }
     }
 }
