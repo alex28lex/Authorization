@@ -3,7 +3,7 @@ Auth module for Magora's Leopold Api authorization Данный модуль п�
 Как интегрировать: 
 
 1)нужно вызвать метод инициализации модуля в Application классе проекта:
-```
+```kotlin
 open class App : Application() {
 
     override fun onCreate() {
