@@ -2,7 +2,6 @@ package com.mgrsys.authorization.authorize.screen.signup
 
 import AppComponentHolder
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject
 import com.magorasystems.pmtoolpush.util.livedata.SingleLiveEvent
@@ -10,7 +9,7 @@ import com.mgrsys.authorization.authorize.application.manager.ErrorHandler
 import com.mgrsys.authorization.authorize.model.dataobject.RegistrationData
 import com.mgrsys.authorization.authorize.model.validator.PasswordValidatorRule
 import com.mgrsys.authorization.authorize.screen.Screens
-import com.mgrsys.authorization.authorize.usecase.SignUpUseCase
+import com.mgrsys.authorization.authorize.model.usecase.SignUpUseCase
 import com.mgrsys.blankproject.model.validator.EmailValidateRule
 import com.mgrsys.blankproject.model.validator.EmptyValidatorRule
 import io.reactivex.android.schedulers.AndroidSchedulers

@@ -10,7 +10,7 @@ import com.mgrsys.authorization.authmodule.R
 import com.mgrsys.authorization.authorize.application.manager.ErrorHandler
 import com.mgrsys.authorization.authorize.application.manager.ResExtractor
 import com.mgrsys.authorization.authorize.model.validator.PasswordValidatorRule
-import com.mgrsys.authorization.authorize.usecase.ChangePassUseCase
+import com.mgrsys.authorization.authorize.model.usecase.ChangePassUseCase
 import com.mgrsys.blankproject.model.validator.EmptyValidatorRule
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable

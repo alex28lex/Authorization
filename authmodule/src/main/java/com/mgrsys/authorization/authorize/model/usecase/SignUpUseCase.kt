@@ -1,19 +1,16 @@
-package com.mgrsys.authorization.authorize.usecase
+package com.mgrsys.authorization.authorize.model.usecase
 
 import com.magorasystems.pmtoolpush.application.rest.config.token.SimpleTokenConfig
 import com.magorasystems.pmtoolpush.screen.viewobject.auth.StringAuthInfoVo
 import com.magorasystems.protocolapi.response.auth.AuthResponseData
 import com.magorasystems.protocolapi.response.auth.StringAuthInfo
 import com.mgrsys.authorization.authorize.application.manager.SessionManager
-import com.mgrsys.authorization.authorize.model.dataobject.AuthorizeResponse
 import com.mgrsys.authorization.authorize.model.dataobject.ClientRegistrationRequest
 import com.mgrsys.authorization.authorize.model.dataobject.RegistrationData
 import com.mgrsys.authorization.authorize.model.repository.AuthRepository
 import com.mgrsys.authorization.authorize.util.MetaDataUtils
 
 import io.reactivex.Flowable
-import io.reactivex.functions.Consumer
-import io.reactivex.functions.Function
 
 /**
  * Developed by Magora Team (magora-systems.com). 2018 .

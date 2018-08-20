@@ -7,9 +7,10 @@ import android.arch.lifecycle.ViewModel
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject
 import com.magorasystems.pmtoolpush.util.livedata.SingleLiveEvent
 import com.mgrsys.authorization.authorize.application.manager.ErrorHandler
+import com.mgrsys.authorization.authorize.model.usecase.SignOutUseCase
 import com.mgrsys.authorization.authorize.screen.Screens
-import com.mgrsys.authorization.authorize.usecase.SignOutUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import ru.terrakok.cicerone.Router
 import javax.inject.Inject
@@ -25,6 +26,8 @@ class SignOutViewModel : ViewModel() {
 
     @Inject
     lateinit var router: Router
+
+    private var _signOutDisposable: Disposable? = null
 
     init {
         AppComponentHolder.component()?.inject(this)
@@ -48,5 +51,10 @@ class SignOutViewModel : ViewModel() {
                         { _authorizeSuccess.value = ViewObject.Error(ErrorHandler.parseError(it)) },
                         { router.navigateTo(Screens.SIGN_IN) }
                 )
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        _signOutDisposable?.dispose()
     }
 }

@@ -1,4 +1,4 @@
-package com.mgrsys.authorization.authorize.usecase
+package com.mgrsys.authorization.authorize.model.usecase
 
 
 import com.magorasystems.pmtoolpush.application.rest.config.token.SimpleTokenConfig

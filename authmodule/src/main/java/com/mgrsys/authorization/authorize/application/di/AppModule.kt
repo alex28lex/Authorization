@@ -5,10 +5,10 @@ import com.mgrsys.authorization.authorize.application.manager.SessionManager
 import com.mgrsys.authorization.authorize.model.datasource.rest.AuthRestClient
 import com.mgrsys.authorization.authorize.model.repository.AuthRepository
 import com.mgrsys.authorization.authorize.model.repository.MockRestAuthRepository
-import com.mgrsys.authorization.authorize.usecase.ChangePassUseCase
-import com.mgrsys.authorization.authorize.usecase.SignInUseCase
-import com.mgrsys.authorization.authorize.usecase.SignOutUseCase
-import com.mgrsys.authorization.authorize.usecase.SignUpUseCase
+import com.mgrsys.authorization.authorize.model.usecase.ChangePassUseCase
+import com.mgrsys.authorization.authorize.model.usecase.SignInUseCase
+import com.mgrsys.authorization.authorize.model.usecase.SignOutUseCase
+import com.mgrsys.authorization.authorize.model.usecase.SignUpUseCase
 import dagger.Module
 import dagger.Provides
 import ru.terrakok.cicerone.Cicerone

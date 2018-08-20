@@ -57,7 +57,7 @@ class SignInFragment : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         initViews()
         authorizeButton.setOnClickListener {
-            viewModel.authorize(
+            viewModel.signIn(
                     CredentialsVo(
                             inputEmail.editText?.text.toString(),
                             inputPassword.editText?.text.toString()
@@ -69,7 +69,7 @@ class SignInFragment : BaseFragment() {
             viewModel.routeToSignUp()
         }
 
-        viewModel.authorizeSuccess.observe(this, Observer {
+        viewModel.signInSuccess.observe(this, Observer {
             when (it) {
                 is loading -> setProgressViewEnabled(true)
                 is success -> setProgressViewEnabled(false)

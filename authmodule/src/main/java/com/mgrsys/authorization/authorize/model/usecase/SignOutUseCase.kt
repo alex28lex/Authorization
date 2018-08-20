@@ -1,4 +1,4 @@
-package com.mgrsys.authorization.authorize.usecase
+package com.mgrsys.authorization.authorize.model.usecase
 
 import com.mgrsys.authorization.authorize.application.manager.SessionManager
 import com.mgrsys.authorization.authorize.model.repository.AuthRepository

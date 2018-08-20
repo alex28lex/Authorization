@@ -14,16 +14,16 @@ import ru.terrakok.cicerone.android.SupportAppNavigator
  * @author Viktor Zemtsov
  */
 abstract class BaseNavigator(
-    activity: FragmentActivity,
-    containerId: Int
+        activity: FragmentActivity,
+        containerId: Int
 ) : SupportAppNavigator(activity, containerId) {
 
-  override fun createActivityIntent(context: Context?, screenKey: String?, data: Any?): Intent? {
-    return when (screenKey) {
-      Screens.SIGN_IN -> null /*AuthActivity.newIntent(context) with ActivityFlags*/
-      else -> createIntent(context, screenKey, data)
+    override fun createActivityIntent(context: Context?, screenKey: String?, data: Any?): Intent? {
+        return when (screenKey) {
+            Screens.SIGN_IN -> null
+            else -> createIntent(context, screenKey, data)
+        }
     }
-  }
 
-  abstract fun createIntent(context: Context?, screenKey: String?, data: Any?): Intent?
+    abstract fun createIntent(context: Context?, screenKey: String?, data: Any?): Intent?
 }

@@ -5,4 +5,4 @@ package com.mgrsys.authorization.authorize.model.dataobject
  *
  * @author mihaylov
  */
-class RegistrationData(val name:String)
+class RegistrationData(val name: String)

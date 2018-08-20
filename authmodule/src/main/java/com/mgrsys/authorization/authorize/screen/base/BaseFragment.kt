@@ -7,8 +7,6 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import com.mgrsys.authorization.authorize.model.view.MessageView
 
 /**
  * Developed by Magora Team (magora-systems.com)
@@ -16,7 +14,7 @@ import com.mgrsys.authorization.authorize.model.view.MessageView
  *
  * @author Viktor Zemtsov
  */
-abstract class BaseFragment : Fragment(), MessageView {
+abstract class BaseFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
@@ -32,9 +30,10 @@ abstract class BaseFragment : Fragment(), MessageView {
     @LayoutRes
     abstract fun getContentViewLayoutRes(): Int
 
-    override fun showMessage(message: String) {
+    fun showMessage(message: String) {
         view?.let {
             Snackbar.make(it, message, Snackbar.LENGTH_LONG).show()
         }
     }
+
 }

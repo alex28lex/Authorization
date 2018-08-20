@@ -3,7 +3,6 @@ package com.magorasystems.pmtoolpush.screen.authorize
 
 import AppComponentHolder
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.magorasystems.pmtoolpush.screen.viewobject.ViewObject
 import com.magorasystems.pmtoolpush.screen.viewobject.auth.CredentialsVo
@@ -11,7 +10,7 @@ import com.magorasystems.pmtoolpush.util.livedata.SingleLiveEvent
 import com.mgrsys.authorization.authorize.application.manager.ErrorHandler
 import com.mgrsys.authorization.authorize.model.validator.PasswordValidatorRule
 import com.mgrsys.authorization.authorize.screen.Screens
-import com.mgrsys.authorization.authorize.usecase.SignInUseCase
+import com.mgrsys.authorization.authorize.model.usecase.SignInUseCase
 import com.mgrsys.blankproject.model.validator.EmailValidateRule
 import com.mgrsys.blankproject.model.validator.EmptyValidatorRule
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -34,9 +33,9 @@ class SignInViewModel : ViewModel() {
     @Inject
     lateinit var router: Router
 
-    private val _authorizeSuccess = SingleLiveEvent<ViewObject<Unit>>()
-    val authorizeSuccess: LiveData<ViewObject<Unit>>
-        get() = _authorizeSuccess
+    private val _signInSuccess = SingleLiveEvent<ViewObject<Unit>>()
+    val signInSuccess: LiveData<ViewObject<Unit>>
+        get() = _signInSuccess
 
     private val _passwordError = SingleLiveEvent<String>()
     val passwordError: LiveData<String>
@@ -47,7 +46,7 @@ class SignInViewModel : ViewModel() {
         get() = _loginError
 
 
-    private var _authorizeDisposable: Disposable? = null
+    private var _signInDisposable: Disposable? = null
 
     init {
         AppComponentHolder.component()?.inject(this)
@@ -57,17 +56,17 @@ class SignInViewModel : ViewModel() {
         router.navigateTo(Screens.SIGN_UP)
     }
 
-    fun authorize(credentials: CredentialsVo) {
+    fun signIn(credentials: CredentialsVo) {
         if (validateLogin(credentials.login) and validatePassword(credentials.password)) {
-            _authorizeDisposable?.dispose()
+            _signInDisposable?.dispose()
 
-            _authorizeSuccess.value = ViewObject.Loading()
-            _authorizeDisposable = authUseCase.signIn(credentials.login, credentials.password)
+            _signInSuccess.value = ViewObject.Loading()
+            _signInDisposable = authUseCase.signIn(credentials.login, credentials.password)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            { _authorizeSuccess.value = ViewObject.Success(Unit) },
-                            { _authorizeSuccess.value = ViewObject.Error(ErrorHandler.parseError(it)) },
+                            { _signInSuccess.value = ViewObject.Success(Unit) },
+                            { _signInSuccess.value = ViewObject.Error(ErrorHandler.parseError(it)) },
                             { router.navigateTo(Screens.MAIN) }
                     )
         }
@@ -105,6 +104,6 @@ class SignInViewModel : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        _authorizeDisposable?.dispose()
+        _signInDisposable?.dispose()
     }
 }
