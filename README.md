@@ -15,7 +15,7 @@ open class App : Application() {
 2)т.к договорились использовать cicerone ,то описать навигатор в активности Авторизации вашего проекта,для этого активность должна быть унаследована от BaseActivity, ключи экранов находятся в классе Screens в AuthModule
 
 пример:
-```
+```kotlin
 override fun navigator(): Navigator {
     return object : com.mgrsys.blankproject.screen.base.BaseNavigator(this, R.id.containerViewGroup) {
         override fun createIntent(context: Context?, screenKey: String?, data: Any?): Intent? {
